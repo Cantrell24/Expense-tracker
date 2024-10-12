@@ -1,4 +1,3 @@
-//script.js
 document.addEventListener("DOMContentLoaded", () => {
     const expenseForm = document.getElementById("expense-form");
     const expenseList = document.getElementById("expense-list");
@@ -25,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         expenses.push(expense);
         displayExpenses(expenses);
-        updateTotalAmount();
+        updateTotalAmount(expenses); // Pass all expenses to update total
 
         expenseForm.reset();
     });
@@ -35,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const id = parseInt(e.target.dataset.id);
             expenses = expenses.filter(expense => expense.id !== id);
             displayExpenses(expenses);
-            updateTotalAmount();
+            updateTotalAmount(expenses); // Update total after deletion
         }
 
         if (e.target.classList.contains("edit-btn")) {
@@ -47,20 +46,24 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("expense-category").value = expense.category;
             document.getElementById("expense-date").value = expense.date;
 
-            expenses = expenses.filter(expense => expense.id !== id);
+            expenses = expenses.filter(exp => exp.id !== id);
             displayExpenses(expenses);
-            updateTotalAmount();
+            updateTotalAmount(expenses); // Update total after editing
         }
     });
 
     filterCategory.addEventListener("change", (e) => {
         const category = e.target.value;
+        let filteredExpenses;
+
         if (category === "All") {
-            displayExpenses(expenses);
+            filteredExpenses = expenses; // Use all expenses
         } else {
-            const filteredExpenses = expenses.filter(expense => expense.category === category);
-            displayExpenses(filteredExpenses);
+            filteredExpenses = expenses.filter(expense => expense.category === category);
         }
+
+        displayExpenses(filteredExpenses);
+        updateTotalAmount(filteredExpenses); // Update total based on filtered expenses
     });
 
     function displayExpenses(expenses) {
@@ -83,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function updateTotalAmount() {
+    function updateTotalAmount(expenses) {
         const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
         totalAmount.textContent = total.toFixed(2);
     }
