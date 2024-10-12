@@ -55,13 +55,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     filterCategory.addEventListener("change", (e) => {
         const category = e.target.value;
+        let filteredExpenses;
+    
         if (category === "All") {
-            displayExpenses(expenses);
+            filteredExpenses = expenses; // Use all expenses
         } else {
-            const filteredExpenses = expenses.filter(expense => expense.category === category);
-            displayExpenses(filteredExpenses);
+            filteredExpenses = expenses.filter(expense => expense.category === category);
         }
+    
+        displayExpenses(filteredExpenses);
+        updateTotalAmount(filteredExpenses); // Pass the filtered expenses to update the total
     });
+    
 
     function displayExpenses(expenses) {
         expenseList.innerHTML = "";
@@ -83,8 +88,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function updateTotalAmount() {
-        const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    function updateTotalAmount(filteredExpenses) {
+        const total = filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);
         totalAmount.textContent = total.toFixed(2);
     }
+
+    
 });
